@@ -50,3 +50,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+lex.yy.c
+minison.output
+minison.tab.c
+minison.tab.h
+minilex
+minigw
+
+*.vscode
