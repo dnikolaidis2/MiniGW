@@ -1,16 +1,16 @@
 
 all: minilex minigw
 
-minilex: bison flex
-		gcc -o minilex lex.yy.c -lfl -g
+minilex: bison flex lex.yy.c minison.tab.c
+		gcc -o minilex lex.yy.c minison.tab.c cgen.c -lfl -g
 
-minigw: bison flex
-		gcc -o minigw lex.yy.c minison.tab.c -lfl -g
+minigw: bison flex lex.yy.c minison.tab.c
+		gcc -o minigw lex.yy.c minison.tab.c cgen.c -lfl -g
 
-bison:
+bison: minison.y
 	bison -d -v -r all minison.y
 
-flex:
+flex: minilex.l
 	flex minilex.l
 
 clean:

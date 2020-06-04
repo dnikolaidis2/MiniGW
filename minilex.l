@@ -4,6 +4,7 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "minison.tab.h"
+	#include "cgen.h"
 
 	typedef struct string
 	{
@@ -89,22 +90,28 @@ start				{printf("Token KEYWORD_START: %s\n", yytext);
 
 
 {IDENTIFIER}		{printf("Token IDENTIFIER: %s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return IDENTIFIER;}
 
 
 {INTEGER_POS}		{printf("Token CONST_INT: %s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return CONST_INT;}
 {FLOAT_POS}			{printf("Token CONST_FLOAT:%s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return CONST_FLOAT;}
 
 
 true				{printf("Token CONST_TRUE: %s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return CONST_TRUE;}
 false				{printf("Token CONST_FALSE: %s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return CONST_FALSE;}
 
 
 {STRING_CONST}		{printf("Token CONST_STRING: %s\n", yytext);
+					yylval.crepr = strdup(yytext);
 					return CONST_STRING;}
 
 
