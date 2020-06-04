@@ -5,6 +5,7 @@
 #include "cgen.h"
 
 extern int yylineno;
+extern string yyline;
 
 void ssopen(sstream *S)
 {
@@ -43,13 +44,13 @@ char *template(const char *pat, ...)
 void yyerror(char const *pat, ...)
 {
 	va_list arg;
-	fprintf(stderr, "line %d: ", yylineno);
+	fprintf(stderr, "Syntax error in line %d: %s ( ", yylineno, yyline.str);
 
 	va_start(arg, pat);
 	vfprintf(stderr, pat, arg);
 	va_end(arg);
 
-	fprintf(stderr, "\n");
+	fprintf(stderr, " )\n");
 
 	yyerror_count++;
 }

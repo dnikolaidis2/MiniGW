@@ -50,6 +50,9 @@ char * filename;
 %type   <crepr> main
 %type   <crepr> function_decl
 %type   <crepr> statement
+%type   <crepr> open_statement
+%type   <crepr> closed_statement
+%type   <crepr> simple_statement
 %type   <crepr> var_const_decl
 %type   <crepr> const_decl
 %type   <crepr> var_decl
@@ -89,8 +92,8 @@ begin:                  program
 program:                statements functions main
                         {$$ = template("%s\n%s\n%s", $1, $2, $3);};
 
-main:                   "function" "start" "(" ")" ":" "void" "{" statement "}"
-                        {$$ = template("void main()\n{\n%s\n}\n", $8);};
+main:                   "function" "start" "(" ")" ":" "void" "{" statements "}"
+                        {$$ = template("void main()\n{%s\n}\n", $8);};
 
 functions:              functions function_decl
                         {$$ = template("%s\n%s", $1, $2);}
@@ -99,25 +102,41 @@ functions:              functions function_decl
 
 // TODO: add array return type
 function_decl:          "function" IDENTIFIER "(" function_param_decl ")" ":" type_decl "{" statements "}"
-                        {$$ = template("%s %s(%s)\n{\n%s\n}", $7, $2, $4, $9);};
+                        {$$ = template("%s %s(%s)\n{%s\n}", $7, $2, $4, $9);};
 
 statements:             statements statement
                         {$$ = template("%s\n%s", $1, $2);}
 |                       %empty
                         {$$ = template("");};
 
-statement:              "{" statement "}"
+statement:              open_statement
+                        {$$ = $1;}
+|                       closed_statement
+                        {$$ = $1;};
+
+// TODO: fixa da fora itsa broken
+open_statement:         "if" "(" expression ")" statement
+                        {$$ = template("if(%s)\n%s", $3, $5);}
+|                       "if" "(" expression ")" closed_statement "else" open_statement
+                        {$$ = template("if(%s)\n%s\nelse\n%s", $3, $5, $7);}
+|                       "while" "(" expression ")" open_statement
+                        {$$ = template("while(%s)\n%s", $3, $5);}
+|                       "for" "(" simple_statement ";" expression ";" simple_statement ")" open_statement
+                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);};
+
+closed_statement:       simple_statement
+                        {$$ = $1;}
+|                       "if" "(" expression ")" closed_statement "else" closed_statement
+                        {$$ = template("if(%s)\n%s\nelse\n%s", $3, $5, $7);}
+|                       "while" "(" expression ")" closed_statement
+                        {$$ = template("while(%s)\n%s", $3, $5);}
+|                       "for" "(" simple_statement ";" expression ";" simple_statement ")" closed_statement
+                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);};
+
+simple_statement:       "{" statements "}"
                         {$$ = template("{\n%s\n}", $2);}
 |                       IDENTIFIER "=" expression ";"
                         {$$ = template("%s = %s;", $1, $3);}
-|                       "if" "(" expression ")" statement
-                        {$$ = template("if (%s)\n %s", $3, $5);}
-|                       "if" "(" expression ")" statement "else" statement
-                        {$$ = template("if (%s)\n%s\nelse\n%s", $3, $5, $7);}
-|                       "for" "(" statement ";" expression ";" statement ")" statement
-                        {$$ = template("for (%s;%s;%s)\n%s", $3, $5, $7, $9);}
-|                       "while" "(" expression ")" statement
-                        {$$ = template("while (%s)\n%s", $3, $5);}
 |                       "break" ";"
                         {$$ = template("break;");}
 |                       "continue" ";"
@@ -135,7 +154,7 @@ statement:              "{" statement "}"
 var_const_decl:         var_decl ":" type_decl
                         {$$ = template("%s %s", $3, $1);}
 |                       const_decl ":" type_decl
-                        {$$ = template("%s const %s", $3, $1);};
+                        {$$ = template("const %s %s", $3, $1);};
 
 const_decl:             "const" var_req
                         {$$ = template("%s", $2);}
@@ -236,7 +255,9 @@ expression:             CONST_INT
 |                       expression "and" expression
                         {$$ = template("%s&&%s", $1, $3);}
 |                       expression "or" expression
-                        {$$ = template("%s||%s", $1, $3);};
+                        {$$ = template("%s||%s", $1, $3);}
+|                       IDENTIFIER "(" function_call_param ")"
+                        {$$ = template("%s(%s)", $1, $3);};
 
 %%
 

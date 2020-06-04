@@ -1,11 +1,10 @@
-#include "mslib.h"
+#include <stdio.h> 
 
+/* MiniScrip Library */
+void writeString(const char* s) {printf("%s", s);}
 
+const char* message = "Hello world!\n";
 
-char * const message = "Hello world!\n";
-
-void main()
-{
-writeString(message);
+void main() {
+  writeString(message);	
 }
-

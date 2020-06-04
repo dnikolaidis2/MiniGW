@@ -1,6 +1,12 @@
 #ifndef CGEN_H
 #define CGEN_H
 
+typedef struct string
+{
+	char * str;
+	int available_size;
+} string;
+
 /*
 	String streams are handy for using standard C-library
 	functions to produce formatted strings.

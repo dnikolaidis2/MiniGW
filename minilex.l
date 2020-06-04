@@ -6,11 +6,12 @@
 	#include "minison.tab.h"
 	#include "cgen.h"
 
-	typedef struct string
-	{
-	    char * str;
-	    int available_size;
-	} string;
+	// Moved to cgen.h for use in error reporting
+	// typedef struct string
+	// {
+	//     char * str;
+	//     int available_size;
+	// } string;
 
 	string yyline;
 	int line_read = 0;
@@ -25,14 +26,14 @@
 %}
 
 ESCAPE_CHAR			"\\n"|"\\t"|"\\r"|"\\\\"|"\\\""|"\\'"
-SPEC_CHAR			[., a-zA-Z0-9/:_$!#@&~\^()\-\+\*]
+ALLOWED_CHAR		[., a-zA-Z0-9/:_$!#@&~\^()\-\+\*]
 
 IDENTIFIER			[a-zA-Z][a-zA-Z0-9_]*
 INTEGER_POS			([1-9][0-9]*)|(0)
 FLOAT_POS			{INTEGER_POS}\.[0-9]+([eE][+-]?{INTEGER_POS})?
 
-STR_DOUBLE_QUOTE	("'")(({SPEC_CHAR}|{ESCAPE_CHAR})*)("'")
-STR_SINGLE_QUOTE	("\"")(({SPEC_CHAR}|{ESCAPE_CHAR})*)("\"")
+STR_DOUBLE_QUOTE	("'")(({ALLOWED_CHAR}|{ESCAPE_CHAR})*)("'")
+STR_SINGLE_QUOTE	("\"")(({ALLOWED_CHAR}|{ESCAPE_CHAR})*)("\"")
 STRING_CONST        {STR_DOUBLE_QUOTE}|{STR_SINGLE_QUOTE}
 LINE_COMMENT		("//")(.*)
 BLOCK_COMMENT		("/*")((.|\n)*)("*/")
@@ -88,6 +89,12 @@ null				{printf("Token KEYWORD_NULL: %s\n", yytext);
 start				{printf("Token KEYWORD_START: %s\n", yytext);
 					return KEYWORD_START;}
 
+and					{printf("Token AND_OP: %s\n", yytext);
+					return AND_OP;}
+or					{printf("Token OR_OP: %s\n", yytext);
+					return OR_OP;}
+not 				{printf("Token NOT_OP: %s\n", yytext);
+					return NOT_OP;}
 
 {IDENTIFIER}		{printf("Token IDENTIFIER: %s\n", yytext);
 					yylval.crepr = strdup(yytext);
@@ -136,13 +143,6 @@ false				{printf("Token CONST_FALSE: %s\n", yytext);
 "!="				{printf("Token NOT_EQUALS_OP: %s\n", yytext);
 					return NOT_EQUALS_OP;}
 
-and					{printf("Token AND_OP: %s\n", yytext);
-					return AND_OP;}
-or					{printf("Token OR_OP: %s\n", yytext);
-					return OR_OP;}
-not 				{printf("Token NOT_OP: %s\n", yytext);
-					return NOT_OP;}
-
 "=" 				{printf("Token ASSIGNMENT_OP: %s\n", yytext);
 					return ASSIGNMENT_OP;}
 
@@ -175,7 +175,7 @@ not 				{printf("Token NOT_OP: %s\n", yytext);
 					line_read = 0;}
 
 .					{printf("Unrecognized token %s near line %d: %s\n",
-							yytext, yylineno, yyline);}
+							yytext, yylineno, yyline.str);}
 
 %%
 
