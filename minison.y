@@ -65,6 +65,7 @@ char * filename;
 %type   <crepr> expression
 %type   <crepr> var_const_decls
 %type   <crepr> ret_type_decl
+%type   <crepr> assign_stmt
 
 %left   "or"
 %left   "and"
@@ -84,28 +85,33 @@ begin:                  program
                                 FILE * outfp = fopen(filename, "w");
                                 fprintf(outfp, "%s%s", c_prologue, $1);
                                 fclose(outfp);
-                                printf("%s\n%s\n", c_prologue, $1);
+                                // printf("%s\n%s\n", c_prologue, $1);
                             }
                         }
 
 program:                var_const_decls functions main
                         {$$ = template("%s\n%s\n%s", $1, $2, $3);};
 
-main:                   "function" "start" "(" ")" ":" "void" "{" statements "}"
-                        {$$ = template("void main()\n{%s\n}\n", $8);};
+main:                   "function" "start" "(" ")" ":" "void" "{" var_const_decls statements "}"
+                        {$$ = template("int main()\n{%s\n%s}\n", $8, $9);};
 
 functions:              functions function_decl
                         {$$ = template("%s\n%s", $1, $2);}
 |                       %empty
                         {$$ = template("");};
 
-function_decl:          "function" IDENTIFIER "(" function_param_decl ")" ":" ret_type_decl "{" statements "}"
-                        {$$ = template("%s %s(%s)\n{%s\n}", $7, $2, $4, $9);};
+function_decl:          "function" IDENTIFIER "(" function_param_decl ")" ":" ret_type_decl "{" var_const_decls statements "}" ";"
+                        {$$ = template("%s %s(%s)\n{%s\n%s\n}", $7, $2, $4, $9, $10);};
 
 statements:             statements statement
                         {$$ = template("%s\n%s", $1, $2);}
-|                       %empty
-                        {$$ = template("");};
+|                       statement
+                        {$$ = $1;};
+
+// statements_non_empty:   statements_non_empty statement
+//                         {$$ = template("$s\n$s", $1, $2);}
+// |                       statement
+//                         {$$ = $1};
 
 statement:              open_statement
                         {$$ = $1;}
@@ -119,8 +125,10 @@ open_statement:         "if" "(" expression ")" statement
                         {$$ = template("if(%s)\n%s\nelse\n%s", $3, $5, $7);}
 |                       "while" "(" expression ")" open_statement
                         {$$ = template("while(%s)\n%s", $3, $5);}
-|                       "for" "(" simple_statement ";" expression ";" simple_statement ")" open_statement
-                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);};
+|                       "for" "(" assign_stmt ";" expression ";" assign_stmt ")" open_statement
+                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);}
+|                       "for" "(" assign_stmt ";" ";" assign_stmt ")" open_statement
+                        {$$ = template("for(%s;;%s)\n%s", $3, $6, $8);};
 
 closed_statement:       simple_statement
                         {$$ = $1;}
@@ -128,10 +136,12 @@ closed_statement:       simple_statement
                         {$$ = template("if(%s)\n%s\nelse\n%s", $3, $5, $7);}
 |                       "while" "(" expression ")" closed_statement
                         {$$ = template("while(%s)\n%s", $3, $5);}
-|                       "for" "(" simple_statement ";" expression ";" simple_statement ")" closed_statement
-                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);};
+|                       "for" "(" assign_stmt ";" expression ";" assign_stmt ")" closed_statement
+                        {$$ = template("for(%s;%s;%s)\n%s", $3, $5, $7, $9);}
+|                       "for" "(" assign_stmt ";" ";" assign_stmt ")" closed_statement
+                        {$$ = template("for(%s;;%s)\n%s", $3, $6, $8);};
 
-simple_statement:       "{" statements "}"
+simple_statement:       "{" statements "}" ";"
                         {$$ = template("{\n%s\n}", $2);}
 |                       IDENTIFIER "=" expression ";"
                         {$$ = template("%s = %s;", $1, $3);}
@@ -146,9 +156,12 @@ simple_statement:       "{" statements "}"
 |                       "return" expression ";"
                         {$$ = template("return %s;", $2);}
 |                       IDENTIFIER "(" function_call_param ")"";"
-                        {$$ = template("%s(%s);", $1, $3);}
-|                       var_const_decl
-                        {$$ = $1;};
+                        {$$ = template("%s(%s);", $1, $3);};
+
+assign_stmt:            IDENTIFIER "=" expression
+                        {$$ = template("%s=%s", $1, $3);}
+|                       IDENTIFIER "[" expression "]" "=" expression
+                        {$$ = template("%s[%s]=%s", $1, $3, $6);};
 
 var_const_decls:        var_const_decls var_const_decl
                         {$$ = template("%s\n%s", $1, $2);}
@@ -175,7 +188,9 @@ var_not_req:            IDENTIFIER "=" expression
 |                       IDENTIFIER
                         {$$ = template("%s", $1);}
 |                       IDENTIFIER "[" CONST_INT "]"
-                        {$$ = template("%s[%s]", $1, $3);};
+                        {$$ = template("%s[%s]", $1, $3);}
+|                       IDENTIFIER "[" "]"
+                        {$$ = template("* %s", $1);};
 
 var_req:                IDENTIFIER "=" expression
                         {$$ = template("%s = %s", $1, $3);};
@@ -242,13 +257,13 @@ expression:             CONST_INT
 |                       "-" expression                  %prec "+"
                         {$$ = template("-%s", $2);}
 |                       expression "**" expression
-                        {$$ = template("pow(%s, %s)", $1, $3);}
+                        {$$ = template("pow((double)%s, (double)%s)", $1, $3);}
 |                       expression "*" expression
                         {$$ = template("%s*%s", $1, $3);}
 |                       expression "/" expression
                         {$$ = template("%s/%s", $1, $3);}
 |                       expression "%" expression
-                        {$$ = template("%s\%%s", $1, $3);}
+                        {$$ = template("(int)%s\%(int)%s", $1, $3);}
 |                       expression "+" expression       %prec "-"
                         {$$ = template("%s+%s", $1, $3);}
 |                       expression "-" expression
