@@ -21,28 +21,26 @@ char * filename;
 %define parse.lac full
 
 
-%token 			KEYWORD_NUMBER	"number"    KEYWORD_BOOLEAN     "boolean"   KEYWORD_VOID 	    "void" 		KEYWORD_STRING 	"string"
-%token 			KEYWORD_VAR 	"var"  	    KEYWORD_IF          "if" 	    KEYWORD_ELSE 	    "else"		KEYWORD_FOR 	"for"
-%token 			KEYWORD_WHILE 	"while"     KEYWORD_FUNCTION    "function"	KEYWORD_CONTINUE    "continue"
-%token 			KEYWORD_CONST	"const"	    KEYWORD_BREAK 	    "break"     KEYWORD_NULL        "null"
-%token 			KEYWORD_START 	"start"	    KEYWORD_RETURN 	    "return"
+%token 			KEYWORD_NUMBER	    "number"    KEYWORD_BOOLEAN     "boolean"   KEYWORD_VOID 	    "void" 		
+%token          KEYWORD_STRING 	    "string"    KEYWORD_VAR 	    "var"  	    KEYWORD_IF          "if"
+%token   	    KEYWORD_ELSE 	    "else"		KEYWORD_FOR 	    "for"       KEYWORD_WHILE 	    "while"
+%token          KEYWORD_FUNCTION    "function"	KEYWORD_CONTINUE    "continue"  KEYWORD_CONST	    "const"
+%token  	    KEYWORD_BREAK 	    "break"     KEYWORD_NULL        "null"      KEYWORD_START 	    "start"
+%token  	    KEYWORD_RETURN 	    "return"
 
 %token  <crepr> IDENTIFIER CONST_INT CONST_FLOAT CONST_TRUE CONST_FALSE CONST_STRING
 
-%token 			PLUS_OP		"+"     MINUS_OP		"-" MULTIPLICATION_OP	"*"  DIVISION_OP	"/"  MODULO_OP 	"%"
-%token			EQUALS_OP 	"=="    LESS_THAN_OP 	"<" LESS_THAN_EQUALS_OP "<=" NOT_EQUALS_OP  "!=" POWER_OP   "**"
-
-%token			AND_OP "and" OR_OP "or"	NOT_OP "not"
-
-%token 			ASSIGNMENT_OP	"="
-
-%token 			SEMICOLON ";" COMMA "," COLON ":"
-%token 			LEFT_PARENTHESIS "(" RIGHT_PARENTHESIS ")" LEFT_BRACKET "[" 
-%token 			RIGHT_BRACKET "]" LEFT_CURLY_BRACKET "{" RIGHT_CURLY_BRACKET "}"
+%token 			PLUS_OP		        "+"         MINUS_OP		    "-"         MULTIPLICATION_OP	"*"  
+%token          DIVISION_OP	        "/"         MODULO_OP 	        "%"			EQUALS_OP 	        "=="
+%token          LESS_THAN_OP 	    "<"         LESS_THAN_EQUALS_OP "<="        NOT_EQUALS_OP       "!="
+%token          POWER_OP            "**"        AND_OP              "and"       OR_OP               "or"
+%token	        NOT_OP              "not"       ASSIGNMENT_OP	    "="         SEMICOLON           ";"
+%token          COMMA               ","         COLON               ":"         LEFT_PARENTHESIS    "("
+%token          RIGHT_PARENTHESIS   ")"         LEFT_BRACKET        "["         RIGHT_BRACKET       "]"
+%token          LEFT_CURLY_BRACKET  "{"         RIGHT_CURLY_BRACKET "}"
 
 
-
-%start begin
+%start  begin
 
 %type   <crepr> program
 %type   <crepr> functions
@@ -282,11 +280,7 @@ int main (int argc, char * argv[]) {
         yyset_in(fd);
         if (yyparse() == 0)
         {
-            printf("Its working!\n");
-        }
-        else
-        {
-            printf("I did a boo boo\n");
+            printf("This program is syntactically corretct!\n");
         }
 
         fclose(fd);

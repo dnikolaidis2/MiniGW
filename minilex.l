@@ -88,27 +88,12 @@ null				{printf("Token KEYWORD_NULL:        %s\n", yytext);
 					return KEYWORD_NULL;}
 start				{printf("Token KEYWORD_START:       %s\n", yytext);
 					return KEYWORD_START;}
-
 and					{printf("Token AND_OP:              %s\n", yytext);
 					return AND_OP;}
 or					{printf("Token OR_OP:               %s\n", yytext);
 					return OR_OP;}
 not 				{printf("Token NOT_OP:              %s\n", yytext);
 					return NOT_OP;}
-
-{IDENTIFIER}		{printf("Token IDENTIFIER:          %s\n", yytext);
-					yylval.crepr = strdup(yytext);
-					return IDENTIFIER;}
-
-
-{INTEGER_POS}		{printf("Token CONST_INT:           %s\n", yytext);
-					yylval.crepr = strdup(yytext);
-					return CONST_INT;}
-{FLOAT_POS}			{printf("Token CONST_FLOAT:         %s\n", yytext);
-					yylval.crepr = strdup(yytext);
-					return CONST_FLOAT;}
-
-
 true				{printf("Token CONST_TRUE:          %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_TRUE;}
@@ -117,6 +102,15 @@ false				{printf("Token CONST_FALSE:         %s\n", yytext);
 					return CONST_FALSE;}
 
 
+{IDENTIFIER}		{printf("Token IDENTIFIER:          %s\n", yytext);
+					yylval.crepr = strdup(yytext);
+					return IDENTIFIER;}
+{INTEGER_POS}		{printf("Token CONST_INT:           %s\n", yytext);
+					yylval.crepr = strdup(yytext);
+					return CONST_INT;}
+{FLOAT_POS}			{printf("Token CONST_FLOAT:         %s\n", yytext);
+					yylval.crepr = strdup(yytext);
+					return CONST_FLOAT;}
 {STRING_CONST}		{printf("Token CONST_STRING:        %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_STRING;}
@@ -142,7 +136,6 @@ false				{printf("Token CONST_FALSE:         %s\n", yytext);
 					return LESS_THAN_EQUALS_OP;}
 "!="				{printf("Token NOT_EQUALS_OP:       %s\n", yytext);
 					return NOT_EQUALS_OP;}
-
 "=" 				{printf("Token ASSIGNMENT_OP:       %s\n", yytext);
 					return ASSIGNMENT_OP;}
 
