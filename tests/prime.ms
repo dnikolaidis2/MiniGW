@@ -20,12 +20,12 @@ function prime(n: number): boolean {
       while (isPrime and (i < n / 2) ) { 
          isPrime = n % i != 0;
          i = i + 2;
-      }
+      };
       result = isPrime;
-   }
+   };
    
    return result;
-}
+};
 
 function start(): void {
 
@@ -38,9 +38,9 @@ function start(): void {
          counter = counter + 1;
          writeNumber(num);
          writeString(" ");
-      }
+      };
       num = num + 1;
-   }
+   };
   
    writeString("\n");
    writeNumber(counter);   

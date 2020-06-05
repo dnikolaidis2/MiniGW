@@ -7,7 +7,7 @@ var a, b: number;
 
 function cube(i: number): number {
   return i*i*i;
-}
+};
    
 function add(n: number, k: number): number {
   var j: number;
@@ -15,7 +15,7 @@ function add(n: number, k: number): number {
   j = (N-n) + cube(k);
   writeNumber(j);
   return j;
-}
+};
 
 /* Here you can see some useless lines.
  * Just for testing the multi-line comments ...
