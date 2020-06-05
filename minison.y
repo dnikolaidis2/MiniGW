@@ -64,6 +64,7 @@ char * filename;
 %type   <crepr> function_param_decl
 %type   <crepr> expression
 %type   <crepr> var_const_decls
+%type   <crepr> ret_type_decl
 
 %left   "or"
 %left   "and"
@@ -81,7 +82,7 @@ begin:                  program
                         {
                             if (yyerror_count == 0) {
                                 FILE * outfp = fopen(filename, "w");
-                                fprintf(outfp, "%s\n%s\n", c_prologue, $1);
+                                fprintf(outfp, "%s%s", c_prologue, $1);
                                 fclose(outfp);
                                 printf("%s\n%s\n", c_prologue, $1);
                             }
@@ -98,8 +99,7 @@ functions:              functions function_decl
 |                       %empty
                         {$$ = template("");};
 
-// TODO: add array return type
-function_decl:          "function" IDENTIFIER "(" function_param_decl ")" ":" type_decl "{" statements "}"
+function_decl:          "function" IDENTIFIER "(" function_param_decl ")" ":" ret_type_decl "{" statements "}"
                         {$$ = template("%s %s(%s)\n{%s\n}", $7, $2, $4, $9);};
 
 statements:             statements statement
@@ -135,6 +135,8 @@ simple_statement:       "{" statements "}"
                         {$$ = template("{\n%s\n}", $2);}
 |                       IDENTIFIER "=" expression ";"
                         {$$ = template("%s = %s;", $1, $3);}
+|                       IDENTIFIER "[" expression "]" "=" expression ";"
+                        {$$ = template("%s[%s] = %s;", $1, $3, $6);}
 |                       "break" ";"
                         {$$ = template("break;");}
 |                       "continue" ";"
@@ -153,7 +155,6 @@ var_const_decls:        var_const_decls var_const_decl
 |                       %empty
                         {$$ = template("");};
 
-// TODO: Array type
 var_const_decl:         var_decl ":" type_decl ";"
                         {$$ = template("%s %s;", $3, $1);}
 |                       const_decl ":" type_decl ";"
@@ -178,6 +179,11 @@ var_not_req:            IDENTIFIER "=" expression
 
 var_req:                IDENTIFIER "=" expression
                         {$$ = template("%s = %s", $1, $3);};
+
+ret_type_decl:          type_decl
+                        {$$ = $1;}
+|                       "[" "]" type_decl
+                        {$$ = template("%s *", $3);};
 
 type_decl:              "number"
                         {$$ = template("double");}

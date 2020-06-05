@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
+#include <stdbool.h>
 
 void writeString(const char* s) {printf("%s", s);}
 void writeNumber(double n) { printf("%0.3lf",n); } 
