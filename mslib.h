@@ -31,4 +31,6 @@ char* readString() {
 
 double readNumber() { return atof(readString()); }
 
+double charToNum(char c) { return c - '0'; }
+
 #endif 

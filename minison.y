@@ -93,7 +93,7 @@ program:                var_const_decls functions main
                         {$$ = template("%s\n%s\n%s", $1, $2, $3);};
 
 main:                   "function" "start" "(" ")" ":" "void" "{" var_const_decls statements "}"
-                        {$$ = template("int main()\n{%s\n%s}\n", $8, $9);};
+                        {$$ = template("void main()\n{%s\n%s\n}\n", $8, $9);};
 
 functions:              functions function_decl
                         {$$ = template("%s\n%s", $1, $2);}
@@ -107,11 +107,6 @@ statements:             statements statement
                         {$$ = template("%s\n%s", $1, $2);}
 |                       statement
                         {$$ = $1;};
-
-// statements_non_empty:   statements_non_empty statement
-//                         {$$ = template("$s\n$s", $1, $2);}
-// |                       statement
-//                         {$$ = $1};
 
 statement:              open_statement
                         {$$ = $1;}
@@ -146,7 +141,7 @@ simple_statement:       "{" statements "}" ";"
 |                       IDENTIFIER "=" expression ";"
                         {$$ = template("%s = %s;", $1, $3);}
 |                       IDENTIFIER "[" expression "]" "=" expression ";"
-                        {$$ = template("%s[%s] = %s;", $1, $3, $6);}
+                        {$$ = template("%s[(int)(%s)] = %s;", $1, $3, $6);}
 |                       "break" ";"
                         {$$ = template("break;");}
 |                       "continue" ";"
@@ -161,7 +156,7 @@ simple_statement:       "{" statements "}" ";"
 assign_stmt:            IDENTIFIER "=" expression
                         {$$ = template("%s=%s", $1, $3);}
 |                       IDENTIFIER "[" expression "]" "=" expression
-                        {$$ = template("%s[%s]=%s", $1, $3, $6);};
+                        {$$ = template("%s[(int)(%s)]=%s", $1, $3, $6);};
 
 var_const_decls:        var_const_decls var_const_decl
                         {$$ = template("%s\n%s", $1, $2);}
@@ -247,7 +242,7 @@ expression:             CONST_INT
 |                       IDENTIFIER
                         {$$ = template("%s", $1);}
 |                       IDENTIFIER "[" expression "]"
-                        {$$ = template("%s[%s]", $1, $3);}
+                        {$$ = template("%s[(int)(%s)]", $1, $3);}
 |                       "(" expression ")"
                         {$$ = template("(%s)", $2);}
 |                       "not" expression
@@ -257,13 +252,13 @@ expression:             CONST_INT
 |                       "-" expression                  %prec "+"
                         {$$ = template("-%s", $2);}
 |                       expression "**" expression
-                        {$$ = template("pow((double)%s, (double)%s)", $1, $3);}
+                        {$$ = template("pow((double)(%s), (double)(%s))", $1, $3);}
 |                       expression "*" expression
                         {$$ = template("%s*%s", $1, $3);}
 |                       expression "/" expression
                         {$$ = template("%s/%s", $1, $3);}
 |                       expression "%" expression
-                        {$$ = template("(int)%s\%(int)%s", $1, $3);}
+                        {$$ = template("(int)(%s)\%(int)(%s)", $1, $3);}
 |                       expression "+" expression       %prec "-"
                         {$$ = template("%s+%s", $1, $3);}
 |                       expression "-" expression

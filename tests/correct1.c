@@ -1,6 +1,6 @@
 #include "mslib.h"
 
-const int size = 100; 
+const int size = 1000;
 double arr[1000] = {
     7, 3, 1, 6, 7, 1, 7, 6, 5, 3, 1, 3, 3, 0, 6, 2, 4, 9, 1, 9, 2, 2, 5, 1, 1, 9, 6, 7, 4, 4, 2, 6, 5, 7, 4, 7, 4, 2, 3, 5, 5, 3, 4, 9, 1, 9, 4, 9, 3, 4,
     9, 6, 9, 8, 3, 5, 2, 0, 3, 1, 2, 7, 7, 4, 5, 0, 6, 3, 2, 6, 2, 3, 9, 5, 7, 8, 3, 1, 8, 0, 1, 6, 9, 8, 4, 8, 0, 1, 8, 6, 9, 4, 7, 8, 8, 5, 1, 8, 4, 3,
@@ -24,12 +24,38 @@ double arr[1000] = {
     7, 1, 6, 3, 6, 2, 6, 9, 5, 6, 1, 8, 8, 2, 6, 7, 0, 4, 2, 8, 2, 5, 2, 4, 8, 3, 6, 0, 0, 8, 2, 3, 2, 5, 7, 5, 3, 0, 4, 2, 0, 7, 5, 2, 9, 6, 3, 4, 5, 0,
 };
 
-int main() {
+void main() {
     const char * message_give_n_neighbors = "Give number of neighbours:\n";
-    double n_neighbors;
+    const char * error_n_greater_then_size = "Errro: Number of neighbours greater then array size.";
+    double n;
+    double i = 0;
+    double j;
+    double tmp_prod;
+    double max_prod = -1;
 
     writeString(message_give_n_neighbors);
-    n_neighbors = readNumber();
+    n = readNumber();
 
-    writeNumber(n_neighbors);
+    if (n > size)
+    {
+        writeString(error_n_greater_then_size);
+        return;
+    }
+
+    while (i + n < size)
+    {
+        tmp_prod = 1;
+        for (j = 0; j < n; j++)
+        {
+            tmp_prod = tmp_prod * arr[(int)(i + j)];
+        }
+        
+        if (tmp_prod > max_prod)
+        {
+            max_prod = tmp_prod;
+        }
+        i = i + 1;
+    }
+
+    writeNumber(max_prod);
 }

@@ -1,30 +1,32 @@
+CC=gcc
+CFLAGS=-std=c99 -Wall -I. -Wno-main -g
 
 all: minigw
 
-tests: correct1 useless myprog
+tests: correct1 useless myprog prime
 
 correct1: minigw
-	gcc -std=c99 -Wall -o correct1_c tests/correct1.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o correct1_c tests/correct1.c
 	./minigw tests/correct1.ms
-	gcc -std=c99 -Wall -o correct1_ms correct1.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o correct1_ms correct1.c
 
 useless: minigw
-	gcc -std=c99 -Wall -o useless_c tests/useless.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o useless_c tests/useless.c
 	./minigw tests/useless.ms
-	gcc -std=c99 -Wall -o useless_ms useless.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o useless_ms useless.c
 
 myprog: minigw
-	gcc -std=c99 -Wall -o myprog_c tests/myprog.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o myprog_c tests/myprog.c
 	./minigw tests/myprog.ms
-	gcc -std=c99 -Wall -o myprog_ms myprog.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o myprog_ms myprog.c
 
 prime: minigw
-	gcc -std=c99 -Wall -o prime_c tests/prime.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o prime_c tests/prime.c
 	./minigw tests/prime.ms
-	gcc -std=c99 -Wall -o prime_ms prime.c -I$(shell pwd)
+	$(CC) $(CFLAGS) -o prime_ms prime.c
 
 minigw: bison flex
-	gcc -o minigw lex.yy.c minison.tab.c cgen.c -lfl
+	$(CC) -o minigw lex.yy.c minison.tab.c cgen.c -lfl
 
 bison: minison.y
 	bison -d -v -r all minison.y
