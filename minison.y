@@ -63,6 +63,7 @@ char * filename;
 %type   <crepr> param_delim
 %type   <crepr> function_param_decl
 %type   <crepr> expression
+%type   <crepr> var_const_decls
 
 %left   "or"
 %left   "and"
@@ -85,9 +86,8 @@ begin:                  program
                                 printf("%s\n%s\n", c_prologue, $1);
                             }
                         }
-|                       %empty;
 
-program:                statements functions main
+program:                var_const_decls functions main
                         {$$ = template("%s\n%s\n%s", $1, $2, $3);};
 
 main:                   "function" "start" "(" ")" ":" "void" "{" statements "}"
@@ -145,14 +145,19 @@ simple_statement:       "{" statements "}"
                         {$$ = template("return %s;", $2);}
 |                       IDENTIFIER "(" function_call_param ")"";"
                         {$$ = template("%s(%s);", $1, $3);}
-|                       var_const_decl ";"
-                        {$$ = template("%s;", $1);};
+|                       var_const_decl
+                        {$$ = $1;};
+
+var_const_decls:        var_const_decls var_const_decl
+                        {$$ = template("%s\n%s", $1, $2);}
+|                       %empty
+                        {$$ = template("");};
 
 // TODO: Array type
-var_const_decl:         var_decl ":" type_decl
-                        {$$ = template("%s %s", $3, $1);}
-|                       const_decl ":" type_decl
-                        {$$ = template("const %s %s", $3, $1);};
+var_const_decl:         var_decl ":" type_decl ";"
+                        {$$ = template("%s %s;", $3, $1);}
+|                       const_decl ":" type_decl ";"
+                        {$$ = template("const %s %s;", $3, $1);};
 
 const_decl:             "const" var_req
                         {$$ = template("%s", $2);}
