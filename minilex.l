@@ -56,114 +56,114 @@ BLOCK_COMMENT		("/*")((.|\n)*)("*/")
 					}
 
 
-number				{printf("Token KEYWORD_NUMBER: %s\n", yytext);
+number				{printf("Token KEYWORD_NUMBER:      %s\n", yytext);
 					return KEYWORD_NUMBER;}
-boolean				{printf("Token KEYWORD_BOOLEAN: %s\n", yytext);
+boolean				{printf("Token KEYWORD_BOOLEAN:     %s\n", yytext);
 					return KEYWORD_BOOLEAN;}
-string				{printf("Token KEYWORD_STRING: %s\n", yytext);
+string				{printf("Token KEYWORD_STRING:      %s\n", yytext);
 					return KEYWORD_STRING;}
-void                {printf("Toekn KEYWORD_VOID: %s\n", yytext);
+void                {printf("Toekn KEYWORD_VOID:        %s\n", yytext);
                     return KEYWORD_VOID;}
-var                 {printf("Token KEYWORD_VAR: %s\n", yytext);
+var                 {printf("Token KEYWORD_VAR:         %s\n", yytext);
                     return KEYWORD_VAR;}
-const               {printf("Token KEYWORD_CONST: %s\n", yytext);
+const               {printf("Token KEYWORD_CONST:       %s\n", yytext);
                     return KEYWORD_CONST;}
-if 					{printf("Token KEYWORD_IF: %s\n", yytext);
+if 					{printf("Token KEYWORD_IF:          %s\n", yytext);
 					return KEYWORD_IF;}
-else				{printf("Token KEYWORD_ELSE: %s\n", yytext);
+else				{printf("Token KEYWORD_ELSE:        %s\n", yytext);
 					return KEYWORD_ELSE;}
-while				{printf("Token KEYWORD_WHILE: %s\n", yytext);
+while				{printf("Token KEYWORD_WHILE:       %s\n", yytext);
 					return KEYWORD_WHILE;}
-for				    {printf("Token KEYWORD_FOR: %s\n", yytext);
+for				    {printf("Token KEYWORD_FOR:         %s\n", yytext);
 					return KEYWORD_FOR;}
-function			{printf("Token KEYWORDFUNCTION: %s\n", yytext);
+function			{printf("Token KEYWORDFUNCTION:     %s\n", yytext);
                     return KEYWORD_FUNCTION;}
-break				{printf("Token KEYWORD_BREAK: %s\n", yytext);
+break				{printf("Token KEYWORD_BREAK:       %s\n", yytext);
 					return KEYWORD_BREAK;}
-continue			{printf("Token KEYWORD_CONTINUE: %s\n", yytext);
+continue			{printf("Token KEYWORD_CONTINUE:    %s\n", yytext);
 					return KEYWORD_CONTINUE;}
-return				{printf("Token KEYWORD_RETURN: %s\n", yytext);
+return				{printf("Token KEYWORD_RETURN:      %s\n", yytext);
 					return KEYWORD_RETURN;}
-null				{printf("Token KEYWORD_NULL: %s\n", yytext);
+null				{printf("Token KEYWORD_NULL:        %s\n", yytext);
 					return KEYWORD_NULL;}
-start				{printf("Token KEYWORD_START: %s\n", yytext);
+start				{printf("Token KEYWORD_START:       %s\n", yytext);
 					return KEYWORD_START;}
 
-and					{printf("Token AND_OP: %s\n", yytext);
+and					{printf("Token AND_OP:              %s\n", yytext);
 					return AND_OP;}
-or					{printf("Token OR_OP: %s\n", yytext);
+or					{printf("Token OR_OP:               %s\n", yytext);
 					return OR_OP;}
-not 				{printf("Token NOT_OP: %s\n", yytext);
+not 				{printf("Token NOT_OP:              %s\n", yytext);
 					return NOT_OP;}
 
-{IDENTIFIER}		{printf("Token IDENTIFIER: %s\n", yytext);
+{IDENTIFIER}		{printf("Token IDENTIFIER:          %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return IDENTIFIER;}
 
 
-{INTEGER_POS}		{printf("Token CONST_INT: %s\n", yytext);
+{INTEGER_POS}		{printf("Token CONST_INT:           %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_INT;}
-{FLOAT_POS}			{printf("Token CONST_FLOAT:%s\n", yytext);
+{FLOAT_POS}			{printf("Token CONST_FLOAT:         %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_FLOAT;}
 
 
-true				{printf("Token CONST_TRUE: %s\n", yytext);
+true				{printf("Token CONST_TRUE:          %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_TRUE;}
-false				{printf("Token CONST_FALSE: %s\n", yytext);
+false				{printf("Token CONST_FALSE:         %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_FALSE;}
 
 
-{STRING_CONST}		{printf("Token CONST_STRING: %s\n", yytext);
+{STRING_CONST}		{printf("Token CONST_STRING:        %s\n", yytext);
 					yylval.crepr = strdup(yytext);
 					return CONST_STRING;}
 
 
-"+"					{printf("Token PLUS_OP: %s\n", yytext);
+"+"					{printf("Token PLUS_OP:             %s\n", yytext);
 					return PLUS_OP;}
-"-"					{printf("Token MINUS_OP: %s\n", yytext);
+"-"					{printf("Token MINUS_OP:            %s\n", yytext);
 					return MINUS_OP;}
-"*"					{printf("Token MULTIPLICATION_OP: %s\n", yytext);
+"*"					{printf("Token MULTIPLICATION_OP:   %s\n", yytext);
 					return MULTIPLICATION_OP;}
-"/"					{printf("Token DIVISION_OP: %s\n", yytext);
+"/"					{printf("Token DIVISION_OP:         %s\n", yytext);
 					return DIVISION_OP;}
-"%"					{printf("Token MODULO_OP: %s\n", yytext);
+"%"					{printf("Token MODULO_OP:           %s\n", yytext);
 					return MODULO_OP;}
-"**"				{printf("Token POWER_OP: %s\n", yytext);
+"**"				{printf("Token POWER_OP:            %s\n", yytext);
 					return POWER_OP;}
-"=="				{printf("Token EQUALS_OP: %s\n", yytext);
+"=="				{printf("Token EQUALS_OP:           %s\n", yytext);
 					return EQUALS_OP;}
-"<"					{printf("Token LESS_THAN_OP: %s\n", yytext);
+"<"					{printf("Token LESS_THAN_OP:        %s\n", yytext);
 					return LESS_THAN_OP;}
 "<="				{printf("Token LESS_THAN_EQUALS_OP: %s\n", yytext);
 					return LESS_THAN_EQUALS_OP;}
-"!="				{printf("Token NOT_EQUALS_OP: %s\n", yytext);
+"!="				{printf("Token NOT_EQUALS_OP:       %s\n", yytext);
 					return NOT_EQUALS_OP;}
 
-"=" 				{printf("Token ASSIGNMENT_OP: %s\n", yytext);
+"=" 				{printf("Token ASSIGNMENT_OP:       %s\n", yytext);
 					return ASSIGNMENT_OP;}
 
 
-";"					{printf("Token SEMICOLON: %s\n", yytext);
+";"					{printf("Token SEMICOLON:           %s\n", yytext);
 					return SEMICOLON;}
-"("					{printf("Token LEFT_PARENTHESIS: %s\n", yytext);
+"("					{printf("Token LEFT_PARENTHESIS:    %s\n", yytext);
 					return LEFT_PARENTHESIS;}
-")"					{printf("Token RIGHT_PARENTHESIS: %s\n", yytext);
+")"					{printf("Token RIGHT_PARENTHESIS:   %s\n", yytext);
 					return RIGHT_PARENTHESIS;}
-","					{printf("Token COMMA: %s\n", yytext);
+","					{printf("Token COMMA:               %s\n", yytext);
 					return COMMA;}
-"["					{printf("Token LEFT_BRACKET: %s\n", yytext);
+"["					{printf("Token LEFT_BRACKET:        %s\n", yytext);
 					return LEFT_BRACKET;}
-"]"					{printf("Token RIGHT_BRACKET: %s\n", yytext);
+"]"					{printf("Token RIGHT_BRACKET:       %s\n", yytext);
 					return RIGHT_BRACKET;}
-"{"					{printf("Token LEFT_CURLY_BRACKET: %s\n", yytext);
+"{"					{printf("Token LEFT_CURLY_BRACKET:  %s\n", yytext);
 					return LEFT_CURLY_BRACKET;}
 "}"					{printf("Token RIGHT_CURLY_BRACKET: %s\n", yytext);
 					return RIGHT_CURLY_BRACKET;}
-":"					{printf("Token COLON: %s\n", yytext);
+":"					{printf("Token COLON:               %s\n", yytext);
 					return COLON;}
 
 {LINE_COMMENT}		
