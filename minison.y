@@ -39,6 +39,8 @@ char * filename;
 %token          RIGHT_PARENTHESIS   ")"         LEFT_BRACKET        "["         RIGHT_BRACKET       "]"
 %token          LEFT_CURLY_BRACKET  "{"         RIGHT_CURLY_BRACKET "}"
 
+// Ficticious tokens to give correct precedence for unary plus/minus operators
+%token          UMINUS UPLUS
 
 %start  begin
 
@@ -70,10 +72,10 @@ char * filename;
 %left   "or"
 %left   "and"
 %left   "==" "!=" "<" "<="
-%left   "-"
+%left   "-" "+"
 %left   "*" "/" "%"
 %right  "**"
-%right  "+"
+%right  UMINUS UPLUS
 %right  "not"
 
 %%
@@ -247,9 +249,9 @@ expression:             CONST_INT
                         {$$ = template("(%s)", $2);}
 |                       "not" expression
                         {$$ = template("!%s", $2);}
-|                       "+" expression
+|                       "+" expression                  %prec UPLUS
                         {$$ = template("+%s", $2);}
-|                       "-" expression                  %prec "+"
+|                       "-" expression                  %prec UMINUS
                         {$$ = template("-%s", $2);}
 |                       expression "**" expression
                         {$$ = template("pow((double)(%s), (double)(%s))", $1, $3);}
@@ -259,7 +261,7 @@ expression:             CONST_INT
                         {$$ = template("%s/%s", $1, $3);}
 |                       expression "%" expression
                         {$$ = template("(int)(%s)\%(int)(%s)", $1, $3);}
-|                       expression "+" expression       %prec "-"
+|                       expression "+" expression
                         {$$ = template("%s+%s", $1, $3);}
 |                       expression "-" expression
                         {$$ = template("%s-%s", $1, $3);}
