@@ -115,7 +115,7 @@ statement:              open_statement
 |                       closed_statement
                         {$$ = $1;};
 
-// TODO: fixa da fora itsa broken
+// https://en.wikipedia.org/wiki/Dangling_else#Avoiding_the_conflict_in_LR_parsers
 open_statement:         "if" "(" expression ")" statement
                         {$$ = template("if(%s)\n%s", $3, $5);}
 |                       "if" "(" expression ")" closed_statement "else" open_statement
@@ -288,12 +288,20 @@ int main (int argc, char * argv[]) {
     
     if (argc == 2)
     {
-        char * start = strrchr(argv[1], '/') + 1;
+        char * start = strrchr(argv[1], '/');
+        if (!start)
+            start = argv[1];
+        else
+            start + 1;
+
         char * end = strrchr(argv[1], '.');
+        if (!end)
+            end = argv[1] + strlen(argv[1]);
+
         int size = end - start;
-        filename = malloc(((size) + 3)*sizeof(char));
+        filename = malloc(((size) + 6)*sizeof(char));
         strncpy(filename, start, size);
-        strcpy(filename + size, ".c");
+        strcpy(filename + size, "_im.c");
 
         if(!(fd = fopen(argv[1], "r")))
         {
@@ -310,6 +318,6 @@ int main (int argc, char * argv[]) {
     }
     else
     {
-        printf("Usage: minigw filename\n");
+        printf("Usage: minigw filename\n Output: filename_im.c");
     }
 }
