@@ -318,6 +318,6 @@ int main (int argc, char * argv[]) {
     }
     else
     {
-        printf("Usage: minigw filename\n Output: filename_im.c");
+        printf("Usage: minigw filename\nOutput: filename_im.c\n");
     }
 }
